@@ -1,0 +1,12 @@
+apiVersion: nginx.lin2ur.cn/v1
+kind: ReverseProxy
+metadata:
+  name: whoami
+  namespace: default
+spec:
+  proxyPass: https://whoami.dev.lin2ur.cn
+  proxySetHeader:
+    x-powered-by: nginx-operator
+  rewrite:
+    - regex: ^/foo(.*)$
+      replacement: /bar$1
