@@ -1,0 +1,94 @@
+{{- if .Values.admissionWebhooks.enabled }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ .Release.Name }}
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /mutate-nginx-lin2ur-cn-v1-reverseproxy
+    failurePolicy: Fail
+    name: mreverseproxy.kb.io
+    rules:
+      - apiGroups:
+          - nginx.lin2ur.cn
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - reverseproxies
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /mutate-nginx-lin2ur-cn-v1-tcpreverseproxy
+    failurePolicy: Fail
+    name: mtcpreverseproxy.kb.io
+    rules:
+      - apiGroups:
+          - nginx.lin2ur.cn
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - tcpreverseproxies
+    sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ .Release.Name }}
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /validate-nginx-lin2ur-cn-v1-reverseproxy
+    failurePolicy: Fail
+    name: vreverseproxy.kb.io
+    rules:
+      - apiGroups:
+          - nginx.lin2ur.cn
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - reverseproxies
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ .Release.Name }}
+        namespace: {{ .Release.Namespace }}
+        path: /validate-nginx-lin2ur-cn-v1-tcpreverseproxy
+    failurePolicy: Fail
+    name: vtcpreverseproxy.kb.io
+    rules:
+      - apiGroups:
+          - nginx.lin2ur.cn
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - tcpreverseproxies
+    sideEffects: None
+{{- end }}
